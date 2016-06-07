@@ -11,8 +11,28 @@ float Newton::test(float x, fxFunctionCall f, fxFunctionCall df) {
     return f(x) + df(x);
 }
 
-Interval<long double> iabs(Interval<long double> value) {
-
+Interval <long double> Newton::iabs(Interval <long double> value) {
+    Interval <long double> resultValue;
+    if((value.a <= 0) && (value.b >= 0)) {
+        resultValue.a = 0;
+        if(abs(value.a) > abs(value.b)){
+            resultValue.b = abs(value.a);
+        }
+        else {
+            resultValue.b = value.b;
+        }
+    }
+    else {
+        if(abs(value.a) < abs(value.b)) {
+            resultValue.b = abs(value.b);
+            resultValue.a = abs(value.a);
+        }
+        else {
+            resultValue.b = abs(value.a);
+            resultValue.a = abs(value.b);
+        }
+    }
+    return resultValue;
 }
 
 long double Newton::normalArithmetic(long double x,
@@ -48,6 +68,7 @@ long double Newton::normalArithmetic(long double x,
                   v = abs(x);
                   if(v < w) {
                       v = w;
+
                       if(v == 0) {
                           st = 0;
                       }
@@ -69,7 +90,7 @@ Interval<long double> Newton::intervalArithmetic(Interval <long double> x,
                                          ifxFunctionCall f,
                                          ifxFunctionCall df,
                                          int mit,
-                                         Interval <long double> eps,
+                                         long double eps,
                                          Interval <long double> *fatx,
                                          int *it,
                                          int *st){
@@ -91,16 +112,17 @@ Interval<long double> Newton::intervalArithmetic(Interval <long double> x,
                   *st = 2;
               } else {
                   xh = x;
-                  w = abs(xh);
+                  w = iabs(xh);
                   x = x - f(x)/dfatx;
-                  qDebug() << "x: " << (float)x;
-                  v = abs(x);
-                  if(v < w) {
+                  qDebug() << "x: " << (float)x.a;
+                  v = iabs(x);
+                  if(v.b < w.a) {
                       v = w;
-                      if(v == 0) {
+                      Interval<long double> diff = (iabs(x - xh) / v);
+                      if(v.a == 0 && v.b == 0) {
                           st = 0;
                       }
-                      else if(abs(x - xh) / v <= eps) {
+                      else if(diff.b <= eps) {
                           st = 0;
                       }
                   }

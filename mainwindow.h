@@ -13,12 +13,14 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = 0);
+    QString getDllFileName();
     ~MainWindow();
 
 private:
     Ui::MainWindow *ui;
 private slots:
     void count();
+    void loadDLL();
 };
 
 #endif // MAINWINDOW_H
