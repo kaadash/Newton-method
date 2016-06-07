@@ -56,7 +56,7 @@ long double Newton::normalArithmetic(long double x,
               *it = *it + 1;
               dfatx=df(x);
               qDebug() << "iterations: " << *it;
-              qDebug() << "mit: " ;
+
 
               if (dfatx==0) {
                   *st = 2;
@@ -64,17 +64,16 @@ long double Newton::normalArithmetic(long double x,
                   xh = x;
                   w = abs(xh);
                   x = x - f(x)/dfatx;
-                  qDebug() << "x: " << (float)x;
+                  qDebug() << "x: " << (double)x;
                   v = abs(x);
                   if(v < w) {
                       v = w;
-
-                      if(v == 0) {
-                          st = 0;
-                      }
-                      else if(abs(x - xh) / v <= eps) {
-                          st = 0;
-                      }
+                  }
+                  if(v == 0) {
+                      st = 0;
+                  }
+                  else if(abs(x - xh) / v <= eps) {
+                      st = 0;
                   }
               }
           } while(*it < mit && *st == 3);
@@ -105,25 +104,34 @@ Interval<long double> Newton::intervalArithmetic(Interval <long double> x,
           do {
               *it = *it + 1;
               dfatx=df(x);
-              qDebug() << "iterations: " << *it;
-              qDebug() << "mit: " ;
-
               if (dfatx.a==0) {
                   *st = 2;
               } else {
+//                  previous x
                   xh = x;
+//                  absolute value of previous x
                   w = iabs(xh);
+//                  x1 = x0 - fx/dfx
                   x = x - f(x)/dfatx;
-                  qDebug() << "x: " << (float)x.a;
+                  qDebug() << "x: " << (double)x.a;
+//                  v is equal absolute value of new x
                   v = iabs(x);
-                  if(v.b < w.a) {
+                  qDebug() << "Wchodze tutaj?" << (double)v.b << ":: " << (double)w.a;
+                  if(v.b <= w.a) {
+//                      v is equal absolute value of old x
                       v = w;
-                      Interval<long double> diff = (iabs(x - xh) / v);
-                      if(v.a == 0 && v.b == 0) {
-                          st = 0;
-                      }
-                      else if(diff.b <= eps) {
-                          st = 0;
+                  }
+                      /*diff is equal to substraction of new x and old x
+                              divided by absolute value of old x*/
+
+                  if(v.a <= 0 && v.b >= 0) {
+                      *st = 0;
+                  }
+                  else {
+                      Interval<long double> diff = iabs(x - xh) / v;
+                      qDebug() << "diff: " << (double)diff.a << ": " << (double)diff.b;
+                      if(diff.a <= eps) {
+                        *st = 0;
                       }
                   }
               }

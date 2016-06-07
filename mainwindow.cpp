@@ -56,37 +56,58 @@ void MainWindow::loadDLL() {
      qDebug() << library.errorString();
          if (library.load())
             qDebug() << "library loaded";
-     fxFunctionCall function = (fxFunctionCall)library.resolve("fx");
-     if (function) {
-        qDebug() << (double)function(100) << " << wynik";
-     } else {
-      qDebug() << "Could not show widget from the loaded library";
-     }
+         const char * fxFunctionName = ui->fxName->text().toStdString().c_str();
+         const char * dfxFunctionName = ui->dfxName->text().toStdString().c_str();
+         if(ui->intervalArithRadioBtn->isChecked()) {
+             this->ifx = (ifxFunctionCall)library.resolve(fxFunctionName);
+             this->idfx = (ifxFunctionCall)library.resolve(dfxFunctionName);
+         }
+         else {
+             this->fx = (fxFunctionCall)library.resolve(fxFunctionName);
+             this->dfx = (fxFunctionCall)library.resolve(dfxFunctionName);
+         }
 }
 
 void MainWindow::count()
 {
     long double result;
+    const long double epsConstValue = 1e-16;
+    Interval <long double> intervalResult;
     Newton newton;
-//    result = newton.test(2, (fxFunctionCall) fx, (fxFunctionCall) dfx);
+    QMessageBox Msgbox;
+    int maxIterations = ui->maxIterSpinBox->value();
     int iterations = 0;
     int state = 0;
     long double functionValue = 0;
-    Interval<long double> intervalFunctionValue(0,0);
-    const long double eps = 1e-16;
-    Interval<long double> ix(1,1);
-    /*
-    result = newton.normalArithmetic(1, (fxFunctionCall) fx,
-                                     (fxFunctionCall) dfx, 100, eps,
-                                     &functionValue, &iterations, &state);*/
+    Interval<long double> intervalFunctionValue(ui->leftXSpinBox->value(),ui->rightXSpinBox->value());
+    long double eps = 0;
+    if(ui->smallRangeCheckBox->isChecked()) {
+        eps = epsConstValue;
+    }
+    else {
+        eps = ui->epsSpinBox->value();
+    }
+    Interval<long double> ix(0,0);
+    if(ui->intervalArithRadioBtn->isChecked()){
+        intervalResult = newton.intervalArithmetic(ix, (ifxFunctionCall) this->ifx,
+                                             (ifxFunctionCall) this->idfx, maxIterations, eps,
+                                             &intervalFunctionValue, &iterations, &state);
 
-    result = newton.intervalArithmetic(ix, (ifxFunctionCall) ifx,
-                                         (ifxFunctionCall) idfx, 100, eps,
-                                         &intervalFunctionValue, &iterations, &state).a;
-    QMessageBox Msgbox;
-    Msgbox.setText("Result is x: " + QString::number(result, 'g', 16)
-                   + "\n state: " + QString::number(state) +
-                   " Function Value: " + QString::number(intervalFunctionValue.a, 'g', 16)
-                   + "Iterations: " + QString::number(iterations));
+        Msgbox.setText("Result is x_: " + QString::number(intervalResult.a, 'g', 16) +
+                       "and x: " + QString::number(intervalResult.b, 'g', 16) +
+                       "\n state: " + QString::number(state) +
+                       " Function Value: " + QString::number(functionValue, 'g', 16) +
+                       "Iterations: " + QString::number(iterations));
+    }
+    else {
+        result = newton.normalArithmetic(ui->xValueSpinBox->value(), (fxFunctionCall) this->fx,
+                                         (fxFunctionCall) this->dfx, maxIterations, eps,
+                                         &functionValue, &iterations, &state);
+
+        Msgbox.setText("Result is x: " + QString::number(result, 'g', 16) +
+                       "\n state: " + QString::number(state) +
+                       " Function Value: " + QString::number(functionValue, 'g', 16) +
+                       "Iterations: " + QString::number(iterations));
+    }
     Msgbox.exec();
 }
