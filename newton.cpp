@@ -55,6 +55,7 @@ long double Newton::normalArithmetic(long double x,
           do {
               *it = *it + 1;
               dfatx=df(x);
+              qDebug() << "function: " << (double)df(x) << ":  " << (double)f(x);
               qDebug() << "iterations: " << *it;
 
 

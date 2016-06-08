@@ -56,8 +56,14 @@ void MainWindow::loadDLL() {
      qDebug() << library.errorString();
          if (library.load())
             qDebug() << "library loaded";
-         const char * fxFunctionName = ui->fxName->text().toStdString().c_str();
-         const char * dfxFunctionName = ui->dfxName->text().toStdString().c_str();
+
+         QString fxName = ui->fxName->text();
+         QByteArray fxNameArr = fxName.toLatin1();
+         QString dfxName = ui->dfxName->text();
+         QByteArray dfxNameArr = dfxName.toLatin1();
+
+         const char *fxFunctionName = fxNameArr.data();
+         const char * dfxFunctionName = dfxNameArr.data();
          if(ui->intervalArithRadioBtn->isChecked()) {
              this->ifx = (ifxFunctionCall)library.resolve(fxFunctionName);
              this->idfx = (ifxFunctionCall)library.resolve(dfxFunctionName);
