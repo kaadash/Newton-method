@@ -54,10 +54,8 @@ long double Newton::normalArithmetic(long double x,
           *it = 0;
           do {
               *it = *it + 1;
-              dfatx=df(x);
-              qDebug() << "function: " << (double)df(x) << ":  " << (double)f(x);
-              qDebug() << "iterations: " << *it;
 
+              dfatx=df(x);
 
               if (dfatx==0) {
                   *st = 2;
@@ -114,10 +112,8 @@ Interval<long double> Newton::intervalArithmetic(Interval <long double> x,
                   w = iabs(xh);
 //                  x1 = x0 - fx/dfx
                   x = x - f(x)/dfatx;
-                  qDebug() << "x: " << (double)x.a;
 //                  v is equal absolute value of new x
                   v = iabs(x);
-                  qDebug() << "Wchodze tutaj?" << (double)v.b << ":: " << (double)w.a;
                   if(v.b <= w.a) {
 //                      v is equal absolute value of old x
                       v = w;

@@ -85,7 +85,8 @@ void MainWindow::count()
     int iterations = 0;
     int state = 0;
     long double functionValue = 0;
-    Interval<long double> intervalFunctionValue(ui->leftXSpinBox->value(),ui->rightXSpinBox->value());
+    Interval<long double> intervalFunctionValue(0, 0);
+    Interval<long double> ix(ui->leftXSpinBox->value(),ui->rightXSpinBox->value());
     long double eps = 0;
     if(ui->smallRangeCheckBox->isChecked()) {
         eps = epsConstValue;
@@ -93,7 +94,6 @@ void MainWindow::count()
     else {
         eps = ui->epsSpinBox->value();
     }
-    Interval<long double> ix(0,0);
     if(ui->intervalArithRadioBtn->isChecked()){
         intervalResult = newton.intervalArithmetic(ix, (ifxFunctionCall) this->ifx,
                                              (ifxFunctionCall) this->idfx, maxIterations, eps,
