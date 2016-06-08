@@ -7,9 +7,6 @@ using namespace std;
 Newton::Newton()
 {
 }
-float Newton::test(float x, fxFunctionCall f, fxFunctionCall df) {
-    return f(x) + df(x);
-}
 
 Interval <long double> Newton::iabs(Interval <long double> value) {
     Interval <long double> resultValue;

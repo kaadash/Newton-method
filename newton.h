@@ -8,7 +8,6 @@ class Newton
 {
 public:
     Newton();
-    float test(float x, fxFunctionCall f, fxFunctionCall df);
     long double normalArithmetic(long double x, fxFunctionCall f, fxFunctionCall df,
                            int mit,
                            long double eps,

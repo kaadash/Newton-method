@@ -78,6 +78,7 @@ void MainWindow::count()
 {
     long double result;
     const long double epsConstValue = 1e-16;
+    string functionValueLeft, functionValueRight, xLeft, xRight;
     Interval <long double> intervalResult;
     Newton newton;
     QMessageBox Msgbox;
@@ -99,21 +100,25 @@ void MainWindow::count()
                                              (ifxFunctionCall) this->idfx, maxIterations, eps,
                                              &intervalFunctionValue, &iterations, &state);
 
-        Msgbox.setText("Result is x_: " + QString::number(intervalResult.a, 'g', 16) +
-                       "and x: " + QString::number(intervalResult.b, 'g', 16) +
+        intervalResult.IEndsToStrings(xLeft, xRight);
+        intervalFunctionValue.IEndsToStrings(functionValueLeft, functionValueRight);
+
+        Msgbox.setText("Left x_: " + QString::fromStdString(xLeft) +
+                       "\n and right x: " + QString::fromStdString(xRight) +
                        "\n state: " + QString::number(state) +
-                       " Function Value: " + QString::number(functionValue, 'g', 16) +
-                       "Iterations: " + QString::number(iterations));
+                       "\n Function Value left: " + QString::fromStdString(functionValueLeft) +
+                       "\n Function Value right: " + QString::fromStdString(functionValueRight) +
+                       "\n Iterations: " + QString::number(iterations));
     }
     else {
         result = newton.normalArithmetic(ui->xValueSpinBox->value(), (fxFunctionCall) this->fx,
                                          (fxFunctionCall) this->dfx, maxIterations, eps,
                                          &functionValue, &iterations, &state);
 
-        Msgbox.setText("Result is x: " + QString::number(result, 'g', 16) +
+        Msgbox.setText("x: " + QString::number(result, 'g', 16) +
                        "\n state: " + QString::number(state) +
-                       " Function Value: " + QString::number(functionValue, 'g', 16) +
-                       "Iterations: " + QString::number(iterations));
+                       "\n Function Value: " + QString::number(functionValue, 'g', 16) +
+                       "\n Iterations: " + QString::number(iterations));
     }
     Msgbox.exec();
 }
