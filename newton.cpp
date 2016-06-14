@@ -100,7 +100,7 @@ Interval<long double> Newton::intervalArithmetic(Interval <long double> x,
           do {
               *it = *it + 1;
               dfatx=df(x);
-              if (dfatx.a==0) {
+              if (dfatx.a <= 0 && dfatx.b >=0) {
                   *st = 2;
               } else {
 //                  previous x
