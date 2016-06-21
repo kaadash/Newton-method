@@ -60,16 +60,19 @@ long double Newton::normalArithmetic(long double x,
                   xh = x;
                   w = abs(xh);
                   x = x - f(x)/dfatx;
-                  qDebug() << "x: " << (double)x;
+                  qDebug() << "diff: " << QString::number(abs(x - xh) / v, 'g', 16);
+                  qDebug() << "x: " << QString::number(x, 'g', 16);
+                  qDebug() << "dfx: " << QString::number(f(x)/dfatx, 'g', 16);
+
                   v = abs(x);
                   if(v < w) {
                       v = w;
                   }
                   if(v == 0) {
-                      st = 0;
+                      *st = 0;
                   }
                   else if(abs(x - xh) / v <= eps) {
-                      st = 0;
+                      *st = 0;
                   }
               }
           } while(*it < mit && *st == 3);
@@ -110,24 +113,28 @@ Interval<long double> Newton::intervalArithmetic(Interval <long double> x,
 //                  x1 = x0 - fx/dfx
                   x = x - f(x)/dfatx;
 //                  v is equal absolute value of new x
-                  v = iabs(x);
-                  if(v.b <= w.a) {
-//                      v is equal absolute value of old x
-                      v = w;
-                  }
+//                  v = iabs(x);
+//                  if(v.b <= w.a) {
+////                      v is equal absolute value of old x
+//                      v = w;
+//                  }
                       /*diff is equal to substraction of new x and old x
                               divided by absolute value of old x*/
 
-                  if(v.a <= 0 && v.b >= 0) {
-                      *st = 0;
-                  }
-                  else {
-                      Interval<long double> diff = iabs(x - xh) / v;
-                      qDebug() << "diff: " << (double)diff.a << ": " << (double)diff.b;
-                      if(diff.a <= eps) {
+//                  if(v.a <= 0 && v.b >= 0) {
+//                      *st = 0;
+//                  }
+//                  else {
+                      Interval<long double> diff = iabs(x - xh);
+                      qDebug() << "x: " << QString::number(x.a, 'g', 16) << " :: " << QString::number(x.b, 'g', 16);
+
+                      qDebug() << "diff: " << QString::number(abs(x.a-xh.a), 'g', 16) << ": " << QString::number(abs(x.b-xh.b), 'g', 16);
+                      qDebug() << "dfx: " << QString::number((f(x)/dfatx).a, 'g', 16) << " ::: " << QString::number((f(x)/dfatx).b, 'g', 16);
+                      if((abs(x.a-xh.a)<eps) && (abs(x.b-xh.b)<eps)) {
                         *st = 0;
                       }
-                  }
+//                  }
+
               }
           } while(*it < mit && *st == 3);
 
